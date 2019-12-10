@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>My Blog</h2>
+
+{%if entry|length==0%}
+<h4>No entries</h4>
+{%else%}
+
+{%for entry in blogs%}
+    <ul>
+        <li>
+            <a href="/home?id={{0}}"><h4>{{title}}</h4></a>
+            <p>{{post}}</p>
+        </li>
+    </ul>
+
+
+{%end block%}
