@@ -1,19 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>My Blog</h2>
+<h1>My Blog</h1>
 
-{%if entry|length==0%}
-<h4>No entries</h4>
+{%if blogs|length==0%}
+<h2>No entries</h1>
 {%else%}
 
-{%for entry in blogs%}
-    <ul>
-        <li>
-            <a href="/home?id={{0}}"><h4>{{title}}</h4></a>
-            <p>{{post}}</p>
-        </li>
-    </ul>
 
+<ul>
+{%for blog in blogs%}
+    <li>
+        <a href="/home?id={{blog.id}}"><h3>{{blog.title}}</h3></a>
+        <p>{{blog.text}}</p>
+    </li>
+{%endfor%}
+</ul>
 
-{%end block%}
+{%endif%}
+
+{%endblock%}

@@ -18,45 +18,46 @@ class Blogs(db.Model):
         self.title=title
         self.text=text
 
-app.route("/")
-def home():
-    return render_template('/home')
+@app.route("/")
+def home_page():
+    return render_template("home.html")
 
-app.route("/entry", methods=['POST', 'GET'])
+@app.route("/entry", methods=['POST','GET'])
 def add():
-    new_title=request.form['title']
-    new_post=request.form['blog-post']
-    title_error=""
-    blog_error=""
-    blank=""
+    if request.method =='POST':
+        new_title=request.form['title']
+        new_post=request.form['blogpost']
+        title_error=""
+        blog_error=""
+        blank=""
 
-    if title_error==blank:
-        title_error="Please give a title to your blog"
+        if new_title==blank:
+            title_error="Please give a title to your blog"
     
-    if blog_error==blank:
-        blog_error="Please write a post"
+        if new_post==blank:
+            blog_error="Please write a post"
 
-    if title_error and blog_error:
-        return render_template('entry.html', title_error=title_error, blog_error=blog_error )
+        if title_error or blog_error:
+            return render_template('entry.html', title_error=title_error, blog_error=blog_error )
+        else:
+            new_entry=Blogs(new_title,new_post)
+            db.session.add(new_entry)
+            db.session.commit()
+            return redirect('/home?id={0}'.format(new_entry.id))
 
-    else:
-        new_entry=Blogs(new_title,new_post)
-        db.session.add(new_entry)
-        db.session.commit()
-        redirect('/home?id={0}'.format(new_entry))
+    return render_template('entry.html', blogs='', title='')
 
-app.route("/home")
+@app.route("/home")
 def main_page():
     entry_id= request.args.get('id')
 
-    if entry_id<0:
-        posts=Blogs.query.all()
+    if entry_id==None:
+        blogs=Blogs.query.all()
         return render_template("home.html", blogs=blogs, title='My Blog')
-
     else:
         entry = Blogs.query.get(entry_id)
         return render_template("each_blog.html", entry=entry, title="Entry Title")
 
 
-if __name__=='__main__':
+if __name__ == "__main__":
     app.run()
